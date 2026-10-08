@@ -1,0 +1,78 @@
+---
+// A job. Opens with its dates so it never reads like a project.
+import type { Role } from '../data/profile';
+
+interface Props {
+  role: Role;
+  level?: 3 | 4;
+}
+
+const { role: r, level = 4 } = Astro.props;
+const Heading = level === 3 ? 'h3' : 'h4';
+---
+
+<article class="role">
+  <div class="role__meta">
+    <p class="role__when mono">{r.from} – {r.to}</p>
+    <Heading class="role__org">{r.org}</Heading>
+    <p class="role__title">{r.title}{r.kind && <span class="role__kind"> · {r.kind}</span>}</p>
+    <p class="role__where mono">{r.place}</p>
+    <p class="role__stack mono">{r.stack.join(' · ')}</p>
+  </div>
+  {r.notes && (
+    <ul class="role__notes">
+      {r.notes.map((n) => <li>{n}</li>)}
+    </ul>
+  )}
+</article>
+
+<style>
+  .role {
+    display: grid;
+    gap: var(--space-md);
+    padding-block: var(--space-lg) var(--space-xl);
+    border-block-start: var(--rule-hair) solid var(--rule);
+  }
+  @media (min-width: 56rem) {
+    .role {
+      grid-template-columns: minmax(0, 4fr) minmax(0, 8fr);
+      gap: var(--space-3xl);
+    }
+  }
+
+  .role__meta { display: grid; gap: var(--space-2xs); align-content: start; }
+
+  .role__when { color: var(--ink-2); }
+
+  .role__org {
+    margin-block-start: var(--space-2xs);
+    font-family: var(--font-display);
+    font-weight: var(--weight-heading);
+    font-size: var(--text-xl);
+    line-height: var(--leading-tight);
+  }
+  .role__title { color: var(--ink); }
+  .role__kind,
+  .role__where,
+  .role__stack { color: var(--muted); }
+
+  .role__notes {
+    display: grid;
+    gap: var(--space-sm);
+    max-width: var(--measure);
+  }
+  @media (min-width: 56rem) {
+    .role__notes { padding-block-start: var(--space-lg); }
+  }
+  .role__notes li {
+    position: relative;
+    padding-inline-start: var(--space-lg);
+    color: var(--ink-2);
+  }
+  .role__notes li::before {
+    content: '–';
+    position: absolute;
+    inset-inline-start: 0;
+    color: var(--muted);
+  }
+</style>

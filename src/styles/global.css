@@ -1,0 +1,129 @@
+@import "./tokens.css";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  overflow-x: clip;
+  /* Overscroll shows daylight at the top and bedrock at the bottom. */
+  background: linear-gradient(var(--color-surface) 50%, var(--color-bedrock) 50%);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: clip;
+  font-family: var(--font-body);
+  font-weight: var(--weight-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--color-ink-light);
+  background: var(--color-surface);
+  font-variant-numeric: oldstyle-nums;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4, p, ul, ol, figure, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3, h4 { font-style: normal; font-weight: inherit; overflow-wrap: anywhere; min-width: 0; }
+
+/* ---------- Strata ---------- */
+
+.band {
+  background: var(--band-paper);
+  color: var(--ink);
+}
+.band[data-tone="light"] {
+  --ink: var(--color-ink-light);
+  --ink-2: var(--color-ink-2-light);
+  --muted: var(--color-muted-light);
+  --rule: var(--color-rule-light);
+  --accent: var(--color-accent-light);
+  --focus: var(--color-focus-light);
+  color-scheme: light;
+}
+.band[data-tone="dark"] {
+  --ink: var(--color-ink-dark);
+  --ink-2: var(--color-ink-2-dark);
+  --muted: var(--color-muted-dark);
+  --rule: var(--color-rule-dark);
+  --accent: var(--color-accent-dark);
+  --focus: var(--color-focus-dark);
+  color-scheme: dark;
+}
+
+.band--surface   { --band-paper: var(--color-surface); }
+.band--interface { --band-paper: var(--color-interface); }
+.band--service   { --band-paper: var(--color-service); }
+.band--pipeline  { --band-paper: var(--color-pipeline); }
+.band--storage   { --band-paper: var(--color-storage); }
+.band--bedrock   { --band-paper: var(--color-bedrock); }
+
+.band__inner {
+  max-width: var(--page-max);
+  padding-inline: var(--gutter);
+}
+
+@media (min-width: 60rem) {
+  .page { padding-inline-start: var(--rail-w); }
+}
+
+/* ---------- Type helpers ---------- */
+
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+  font-size: var(--text-sm);
+  letter-spacing: 0;
+}
+
+/* ---------- Links ---------- */
+
+a {
+  color: inherit;
+  text-decoration-line: underline;
+  text-decoration-thickness: var(--rule-hair);
+  text-underline-offset: 0.22em;
+  text-decoration-color: var(--rule);
+  transition: color var(--dur-micro) var(--ease-out), text-decoration-color var(--dur-micro) var(--ease-out);
+}
+a:hover { text-decoration-color: var(--accent); color: var(--accent); }
+a:active { color: var(--ink); }
+
+:focus-visible {
+  outline: var(--rule-heavy) solid var(--focus);
+  outline-offset: 3px;
+  transition: none;
+}
+
+.link-out { white-space: nowrap; }
+
+/* ---------- Page-load reveal (hero only) ---------- */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: reveal var(--dur-long) var(--ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * 70ms);
+}
+@keyframes reveal { to { opacity: 1; transform: none; } }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 150ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 150ms !important;
+  }
+  .reveal { transform: none; animation-name: reveal-reduced; animation-delay: 0ms; }
+  @keyframes reveal-reduced { to { opacity: 1; } }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}

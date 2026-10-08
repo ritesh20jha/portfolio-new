@@ -1,0 +1,126 @@
+---
+import Base from '../layouts/Base.astro';
+import Rail from '../components/Rail.astro';
+import Hero from '../components/Hero.astro';
+import Band from '../components/Band.astro';
+import Role from '../components/Role.astro';
+import Project from '../components/Project.astro';
+import Bench from '../components/Bench.astro';
+import Contact from '../components/Contact.astro';
+import {
+  layers,
+  person,
+  interfaceRoles,
+  oracle,
+  browserstack,
+  serviceProjects,
+  fluxpay,
+  emitkit,
+  recache,
+} from '../data/profile';
+
+const layer = Object.fromEntries(layers.map((l) => [l.id, l])) as Record<(typeof layers)[number]['id'], (typeof layers)[number]>;
+---
+
+<Base
+  title={`${person.name}: backend engineer`}
+  description="Ritesh Jha, backend engineer in Mumbai. Started with Next.js front ends, moved down the stack to payment pipelines and a Redis-compatible server in Go."
+>
+  <Rail />
+  <div class="page">
+    <Hero />
+
+    <main>
+      <Band layer={layer.interface} tone="light">
+        <div class="group">
+          <h3 class="group__label">Work</h3>
+          {interfaceRoles.map((r) => <Role role={r} />)}
+        </div>
+      </Band>
+
+      <Band layer={layer.service} tone="light">
+        <div class="group">
+          <h3 class="group__label">Work</h3>
+          <Role role={oracle} />
+          <Role role={browserstack} />
+        </div>
+
+        <div class="group group--next">
+          <h3 class="group__label">Projects</h3>
+          <div class="pair">
+            {serviceProjects.map((p) => <Project project={p} level={4} />)}
+          </div>
+        </div>
+      </Band>
+
+      <Band layer={layer.pipeline} tone="dark">
+        <div class="waterline" slot="before">
+          <p class="waterline__text">Below this line, the work is invisible until it breaks.</p>
+        </div>
+        <div class="group">
+          <h3 class="group__label">Projects</h3>
+          <div class="pipeline-grid">
+            <Project project={fluxpay} size="lead" level={4} />
+            <Project project={emitkit} level={4} />
+          </div>
+        </div>
+      </Band>
+
+      <Band layer={layer.storage} tone="dark">
+        <div class="group">
+          <h3 class="group__label">Projects</h3>
+          <div class="storage-grid">
+            <Project project={recache} size="lead" level={4} />
+            <Bench />
+          </div>
+        </div>
+      </Band>
+    </main>
+
+    <Contact />
+  </div>
+</Base>
+
+<style>
+  /* Work and Projects are always labelled, so the two never blur together. */
+  .group__label {
+    margin-block-end: var(--space-sm);
+    font-family: var(--font-body);
+    font-weight: var(--weight-strong);
+    font-size: var(--text-sm);
+    letter-spacing: var(--tracking-label);
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .group--next { margin-block-start: var(--space-3xl); }
+
+  .pair {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  @media (min-width: 56rem) {
+    .pair { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-2xl) var(--space-3xl); }
+  }
+
+  /* The waterline: where the ink flips. */
+  .waterline {
+    margin-block-end: var(--space-3xl);
+    padding-block-start: var(--space-md);
+    border-block-start: var(--rule-hair) dashed var(--muted);
+  }
+  .waterline__text {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--muted);
+  }
+
+  .pipeline-grid,
+  .storage-grid {
+    display: grid;
+    gap: var(--space-2xl);
+  }
+  @media (min-width: 64rem) {
+    .pipeline-grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-3xl); }
+    .storage-grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); align-items: start; }
+  }
+</style>

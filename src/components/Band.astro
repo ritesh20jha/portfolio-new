@@ -1,0 +1,56 @@
+---
+import type { Layer } from '../data/profile';
+
+interface Props {
+  layer: Layer;
+  tone: 'light' | 'dark';
+}
+
+const { layer, tone } = Astro.props;
+---
+
+<section
+  class={`band band--${layer.id} stratum stratum--${layer.id}`}
+  id={layer.id}
+  data-layer={layer.id}
+  data-tone={tone}
+  aria-labelledby={`${layer.id}-title`}
+>
+  <div class="band__inner">
+    <slot name="before" />
+    <header class="stratum__head">
+      <h2 class="stratum__title" id={`${layer.id}-title`}>{layer.name}</h2>
+      <p class="stratum__lede">{layer.lede}</p>
+    </header>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .stratum { padding-block: var(--space-3xl); }
+  /* Uneven rhythm on purpose: deeper bands get more room. */
+  .stratum--interface { padding-block: var(--space-2xl) var(--space-3xl); }
+  .stratum--pipeline { padding-block: var(--space-2xl) var(--space-3xl); }
+  .stratum--storage { padding-block: var(--space-3xl) var(--space-4xl); }
+
+  .stratum__head {
+    display: grid;
+    gap: var(--space-md);
+    margin-block-end: var(--space-2xl);
+    max-width: 48rem;
+  }
+  .stratum__title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-display-s);
+    font-variation-settings: 'opsz' 72;
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+  }
+  .stratum__lede {
+    max-width: 52ch;
+    font-size: var(--text-md);
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+</style>

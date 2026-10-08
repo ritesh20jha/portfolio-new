@@ -1,0 +1,165 @@
+---
+import { layers, person } from '../data/profile';
+---
+
+<header class="band band--surface hero" id="surface" data-layer="surface" data-tone="light">
+  <div class="band__inner hero__inner">
+    <div class="hero__text">
+      <p class="hero__name reveal" style="--i: 0">{person.name}</p>
+      <h1 class="hero__title reveal" style="--i: 1">
+        <span>Started at the UI.</span>
+        <span>Kept digging.</span>
+      </h1>
+      <p class="hero__lede reveal" style="--i: 2">
+        Backend engineer in {person.city}, {person.role.toLowerCase()} at {person.company} since {person.since}.
+        I began with Next.js front ends and browser automation, then kept asking what sat underneath:
+        a self-healing pipeline at BrowserStack, a payments backend in Java and Kafka, and a
+        Redis-compatible server I wrote in Go.
+      </p>
+      <ul class="hero__links reveal" style="--i: 3">
+        <li><a href={`mailto:${person.email}`}>{person.email}</a></li>
+        <li><a class="link-out" href={person.github}>GitHub <span aria-hidden="true">↗</span></a></li>
+        <li><a class="link-out" href={person.linkedin}>LinkedIn <span aria-hidden="true">↗</span></a></li>
+      </ul>
+    </div>
+
+    <nav class="stackmap reveal" style="--i: 4" aria-label="Layers of the stack">
+      <ol>
+        {layers.map((l) => (
+          <li
+            class={`stackmap__layer stackmap__layer--${l.id}`}
+            data-tone={l.id === 'pipeline' || l.id === 'storage' ? 'dark' : 'light'}
+          >
+            <a href={`#${l.id}`}>
+              <span class="stackmap__name">{l.name}</span>
+              <span class="stackmap__tags">{l.tags.join(' · ')}</span>
+              <span class="stackmap__arrow" aria-hidden="true">↓</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .hero__inner {
+    display: grid;
+    gap: var(--space-2xl);
+    padding-block: var(--space-2xl) var(--space-3xl);
+  }
+  @media (min-width: 40rem) {
+    .hero__inner { padding-block: var(--space-3xl) var(--space-4xl); }
+  }
+  @media (min-width: 72rem) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+      align-items: end;
+      gap: var(--space-2xl) var(--space-3xl);
+    }
+  }
+
+  .hero__name {
+    font-family: var(--font-display);
+    font-weight: var(--weight-heading);
+    font-size: var(--text-md);
+    letter-spacing: -0.01em;
+    margin-block-end: var(--space-lg);
+  }
+
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-display);
+    font-variation-settings: 'opsz' 72;
+    line-height: var(--leading-display);
+    letter-spacing: var(--tracking-display);
+  }
+  .hero__title span { display: block; }
+
+  .hero__lede {
+    max-width: 52ch;
+    margin-block-start: var(--space-xl);
+    font-size: var(--text-md);
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  .hero__links {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-xs) var(--space-lg);
+    margin-block-start: var(--space-xl);
+  }
+  .hero__links a { white-space: nowrap; }
+
+  /* ---------- Stack map: a small preview of the page's strata ---------- */
+
+  .stackmap ol {
+    border: var(--rule-hair) solid var(--rule);
+  }
+  .stackmap__layer { background: var(--band-paper); color: var(--ink); }
+  .stackmap__layer[data-tone='light'] { --ink: var(--color-ink-light); --muted: var(--color-muted-light); --accent: var(--color-accent-light); --focus: var(--color-focus-light); }
+  .stackmap__layer[data-tone='dark'] { --ink: var(--color-ink-dark); --muted: var(--color-muted-dark); --accent: var(--color-accent-dark); --focus: var(--color-focus-dark); }
+  .stackmap__layer--interface { --band-paper: var(--color-interface); }
+  .stackmap__layer--service { --band-paper: var(--color-service); }
+  .stackmap__layer--pipeline { --band-paper: var(--color-pipeline); position: relative; }
+  .stackmap__layer--storage { --band-paper: var(--color-storage); }
+
+  .stackmap__layer--pipeline::before {
+    content: 'waterline';
+    position: absolute;
+    inset-block-start: var(--space-xs);
+    inset-inline-end: var(--space-md);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+
+  .stackmap a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'name arrow'
+      'tags arrow';
+    align-items: center;
+    column-gap: var(--space-md);
+    padding: var(--space-md) var(--space-md);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  /* Detail grows with depth. */
+  .stackmap__layer--pipeline a { padding-block: var(--space-lg); }
+  .stackmap__layer--storage a { padding-block: var(--space-xl); }
+
+  .stackmap a:focus-visible { outline-offset: -4px; }
+
+  .stackmap__name {
+    grid-area: name;
+    font-family: var(--font-display);
+    font-weight: var(--weight-heading);
+    font-size: var(--text-lg);
+    line-height: var(--leading-tight);
+    white-space: nowrap;
+  }
+  .stackmap__tags {
+    grid-area: tags;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+  .stackmap__arrow {
+    grid-area: arrow;
+    color: var(--muted);
+    transition: transform var(--dur-short) var(--ease-out);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .stackmap a:hover .stackmap__arrow,
+    .stackmap a:active .stackmap__arrow { transform: none; }
+  }
+  @media (hover: hover) and (pointer: fine) {
+    .stackmap a:hover .stackmap__arrow { transform: translateY(3px); }
+  }
+  .stackmap a:active .stackmap__arrow { transform: translateY(5px); }
+</style>

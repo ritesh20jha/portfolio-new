@@ -1,0 +1,86 @@
+---
+import { bench } from '../data/profile';
+
+const rps = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 });
+const ms = (n: number) => n.toFixed(3);
+---
+
+<figure class="bench">
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Command</th>
+        <th scope="col" class="num">req/s</th>
+        <th scope="col" class="num">p50 ms</th>
+        <th scope="col" class="num">p99 ms</th>
+      </tr>
+    </thead>
+    <tbody>
+      {bench.map((r) => (
+        <tr class:list={{ 'is-slow': r.cmd === 'XRANGE' }}>
+          <th scope="row">
+            {r.cmd}
+            <span class="bench__type">{r.type}</span>
+          </th>
+          <td class="num">{rps.format(r.rps)}</td>
+          <td class="num">{ms(r.p50)}</td>
+          <td class="num">{ms(r.p99)}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <figcaption>
+    redis-benchmark, 50 clients, 50,000 requests, 1,000-key space, as published in the recache README.
+    XRANGE is the slow row: it scans a sorted slice of stream entries instead of doing a map lookup.
+  </figcaption>
+</figure>
+
+<style>
+  .bench { min-width: 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums lining-nums;
+    font-size: var(--text-sm);
+  }
+
+  th, td {
+    padding-block: var(--space-sm);
+    text-align: start;
+    font-weight: var(--weight-body);
+    border-block-end: var(--rule-hair) solid var(--rule);
+  }
+  th + th, td, th + td { padding-inline-start: var(--space-md); }
+
+  thead th {
+    color: var(--muted);
+    font-size: var(--text-xs);
+    border-block-end-color: var(--ink-2);
+  }
+
+  tbody th { color: var(--ink); white-space: nowrap; }
+  td { color: var(--ink-2); }
+  .num { text-align: end; white-space: nowrap; }
+
+  .bench__type {
+    display: block;
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    color: var(--muted);
+  }
+  @media (min-width: 40rem) {
+    .bench__type { display: inline; margin-inline-start: var(--space-xs); }
+  }
+
+  .is-slow td:last-child { color: var(--accent); }
+
+  figcaption {
+    margin-block-start: var(--space-md);
+    max-width: var(--measure);
+    font-size: var(--text-sm);
+    line-height: 1.55;
+    color: var(--muted);
+  }
+</style>

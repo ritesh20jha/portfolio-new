@@ -1,0 +1,21 @@
+[
+  {
+    "date": "2026-10-08",
+    "macrostructure": "Narrative Workflow",
+    "theme": "custom",
+    "theme_axes": "light→dark / roman-serif / warm",
+    "vibe": "daylight paper descending into bedrock",
+    "nav": "N3 side-rail (depth gauge)",
+    "footer": "none (colophon removed at user request)",
+    "enrichment": "none",
+    "brief": "Ritesh Jha portfolio · down the stack"
+  },
+  {
+    "date": "2026-10-08",
+    "macrostructure": "Marquee Hero",
+    "theme": "Grid",
+    "theme_axes": "light / grotesk-heavy / cool (ultramarine)",
+    "enrichment": "unknown",
+    "brief": "Ritesh Jha portfolio · first build (deleted; reconstructed from memory)"
+  }
+]

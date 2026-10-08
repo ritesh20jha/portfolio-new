@@ -1,0 +1,165 @@
+---
+// N3 side-rail, used as a depth gauge. Desktop only; the hero's stack map
+// does the same job on small screens.
+import { person } from '../data/profile';
+
+const stops = [
+  { id: 'surface', label: 'surface' },
+  { id: 'interface', label: 'interface' },
+  { id: 'service', label: 'service' },
+  { id: 'pipeline', label: 'pipeline', belowWater: true },
+  { id: 'storage', label: 'storage' },
+  { id: 'contact', label: 'contact' },
+];
+---
+
+<nav class="rail" aria-label="Page depth" data-layer="surface">
+  <a class="rail__mark" href="#surface" aria-label={`${person.name}, back to top`}>rj</a>
+
+  <div class="rail__depth">
+    <ol class="rail__gauge">
+      {stops.map((s) => (
+        <li class:list={['rail__stop', { 'rail__stop--below': s.belowWater }]}>
+          <a href={`#${s.id}`} data-target={s.id}>{s.label}</a>
+        </li>
+      ))}
+    </ol>
+    <span class="rail__marker" aria-hidden="true"></span>
+  </div>
+
+  <a class="rail__email" href={`mailto:${person.email}`}>email</a>
+</nav>
+
+<script>
+  const rail = document.querySelector<HTMLElement>('.rail');
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.rail__gauge a'));
+  const bands = Array.from(document.querySelectorAll<HTMLElement>('[data-layer]')).filter((el) => el !== rail);
+
+  function activate(id: string) {
+    if (!rail) return;
+    const link = links.find((a) => a.dataset.target === id);
+    if (!link) return;
+    links.forEach((a) => a.removeAttribute('aria-current'));
+    link.setAttribute('aria-current', 'location');
+    rail.dataset.layer = id;
+    const li = link.parentElement as HTMLElement;
+    rail.style.setProperty('--marker-y', `${li.offsetTop + li.offsetHeight / 2}px`);
+  }
+
+  if (rail && bands.length && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) activate((e.target as HTMLElement).dataset.layer!);
+        }
+      },
+      // A band is "current" once it crosses the middle of the viewport.
+      { rootMargin: '-50% 0px -50% 0px' },
+    );
+    bands.forEach((b) => io.observe(b));
+    activate('surface');
+  }
+</script>
+
+<style>
+  .rail { display: none; }
+
+  @media (min-width: 60rem) {
+    .rail {
+      position: fixed;
+      inset-block: 0;
+      inset-inline-start: 0;
+      z-index: var(--z-sticky);
+      width: var(--rail-w);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: var(--space-lg) var(--space-lg) var(--space-lg) var(--space-lg);
+      border-inline-end: var(--rule-hair) solid var(--rule);
+      background: var(--band-paper);
+      color: var(--ink);
+      transition: background-color var(--dur-long) var(--ease-in-out), color var(--dur-long) var(--ease-in-out),
+        border-color var(--dur-long) var(--ease-in-out);
+
+      /* Light until the waterline, dark below it. */
+      --band-paper: var(--color-surface);
+      --ink: var(--color-ink-light);
+      --muted: var(--color-muted-light);
+      --rule: var(--color-rule-light);
+      --accent: var(--color-accent-light);
+      --focus: var(--color-focus-light);
+    }
+    .rail[data-layer='interface'] { --band-paper: var(--color-interface); }
+    .rail[data-layer='service'] { --band-paper: var(--color-service); }
+    .rail[data-layer='pipeline'],
+    .rail[data-layer='storage'],
+    .rail[data-layer='contact'] {
+      --ink: var(--color-ink-dark);
+      --muted: var(--color-muted-dark);
+      --rule: var(--color-rule-dark);
+      --accent: var(--color-accent-dark);
+      --focus: var(--color-focus-dark);
+    }
+    .rail[data-layer='pipeline'] { --band-paper: var(--color-pipeline); }
+    .rail[data-layer='storage'] { --band-paper: var(--color-storage); }
+    .rail[data-layer='contact'] { --band-paper: var(--color-bedrock); }
+  }
+
+  .rail__mark {
+    font-family: var(--font-display);
+    font-weight: var(--weight-heading);
+    font-size: var(--text-lg);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    align-self: flex-start;
+  }
+
+  .rail__depth { position: relative; }
+
+  .rail__gauge {
+    display: grid;
+    gap: var(--space-sm);
+    padding-inline-start: var(--space-md);
+    border-inline-start: var(--rule-hair) solid var(--rule);
+  }
+
+  .rail__stop a {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--muted);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .rail__stop a:hover { color: var(--accent); }
+  .rail__stop a[aria-current] { color: var(--ink); font-weight: var(--weight-strong); }
+
+  /* The waterline, drawn across the gauge. */
+  .rail__stop--below {
+    margin-block-start: var(--space-sm);
+    padding-block-start: var(--space-sm);
+    border-block-start: var(--rule-hair) dashed var(--rule);
+    margin-inline-start: calc(var(--space-md) * -1 - 4px);
+    padding-inline-start: calc(var(--space-md) + 4px);
+  }
+
+  .rail__marker {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: -3px;
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    transform: translateY(calc(var(--marker-y, 0px) - 3.5px));
+    transition: transform var(--dur-long) var(--ease-out);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rail__marker { transition: none; }
+  }
+
+  .rail__email {
+    font-size: var(--text-sm);
+    align-self: flex-start;
+    white-space: nowrap;
+  }
+</style>

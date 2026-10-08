@@ -1,0 +1,94 @@
+/* Hallmark · genre: editorial · macrostructure: Narrative Workflow (layers as stages) · H2 hero knobs: ratio=7/5, right=stack map, divider=negative space
+ * theme: custom · vibe: "daylight paper descending into bedrock" · paper: oklch(97.5% 0.010 75) → oklch(15% 0.010 58) · accent: oklch(50% 0.15 42)
+ * display: Newsreader · body: IBM Plex Sans · outlier: JetBrains Mono (technical data only)
+ * axes: light→dark / roman-serif / warm · nav: N3 side-rail (depth gauge) · footer: none (contact band closes the page) · enrichment: none (typography + CSS strata)
+ * tone: technical, honest, quietly crafted · studied: no · context: inferred, approved 2026-10-08
+ * Hallmark · pre-emit critique: P5 H4 E4 S5 R5 V5
+ */
+
+:root {
+  /* Strata — paper darkens with depth. Hue stays warm; only lightness moves. */
+  --color-surface:   oklch(97.5% 0.010 75);
+  --color-interface: oklch(95%   0.013 75);
+  --color-service:   oklch(91.5% 0.016 72);
+  --color-pipeline:  oklch(26%   0.014 62);
+  --color-storage:   oklch(20.5% 0.012 60);
+  --color-bedrock:   oklch(15%   0.010 58);
+
+  /* Ink above the waterline */
+  --color-ink-light:    oklch(21% 0.014 60);
+  --color-ink-2-light:  oklch(36% 0.014 60);
+  --color-muted-light:  oklch(46% 0.014 62);
+  --color-rule-light:   oklch(80% 0.016 70);
+  --color-accent-light: oklch(50% 0.15  42);
+  --color-focus-light:  oklch(47% 0.19  42);
+
+  /* Ink below the waterline */
+  --color-ink-dark:     oklch(94% 0.010 75);
+  --color-ink-2-dark:   oklch(83% 0.012 72);
+  --color-muted-dark:   oklch(71% 0.014 70);
+  --color-rule-dark:    oklch(37% 0.012 62);
+  --color-accent-dark:  oklch(76% 0.13  52);
+  --color-focus-dark:   oklch(80% 0.16  52);
+
+  /* Type */
+  --font-display: "Newsreader Variable", "Newsreader", ui-serif, Georgia, serif;
+  --font-body:    "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:    "JetBrains Mono Variable", "JetBrains Mono", ui-monospace, monospace;
+
+  --weight-display: 200;
+  --weight-light:   350;
+  --weight-heading: 500;
+  --weight-body:    400;
+  --weight-strong:  600;
+
+  /* Major third, 16px base */
+  --text-xs:   0.8rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-md:   1.25rem;
+  --text-lg:   1.5625rem;
+  --text-xl:   1.9531rem;
+  --text-2xl:  2.4414rem;
+  --text-3xl:  clamp(2.25rem, 3vw + 1.25rem, 3.0518rem);
+  --text-display-s: clamp(2.25rem, 4vw + 1rem, 4rem);
+  --text-display:   clamp(2.25rem, 7vw + 0.5rem, 5.25rem);
+
+  --leading-display: 1.04;
+  --leading-tight:   1.2;
+  --leading-body:    1.6;
+  --tracking-display: -0.025em;
+  --tracking-label:   0.06em;
+
+  /* 4pt spacing */
+  --space-3xs: 0.125rem;
+  --space-2xs: 0.25rem;
+  --space-xs:  0.5rem;
+  --space-sm:  0.75rem;
+  --space-md:  1rem;
+  --space-lg:  1.5rem;
+  --space-xl:  2.5rem;
+  --space-2xl: 4rem;
+  --space-3xl: 6rem;
+  --space-4xl: 9rem;
+
+  --gutter:   clamp(1rem, 5vw, 4.5rem);
+  --measure:  65ch;
+  --page-max: 78rem;
+  --rail-w:   10.5rem;
+
+  --rule-hair:  1px;
+  --rule-heavy: 2px;
+  --radius-none: 0;
+
+  /* Motion */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:     cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-micro: 120ms;
+  --dur-short: 220ms;
+  --dur-long:  420ms;
+
+  --z-base:   1;
+  --z-sticky: 200;
+}

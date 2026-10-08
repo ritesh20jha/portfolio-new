@@ -1,0 +1,113 @@
+---
+import { person } from '../data/profile';
+---
+
+<section class="band band--bedrock contact" id="contact" data-layer="contact" data-tone="dark" aria-labelledby="contact-title">
+  <div class="band__inner">
+    <h2 class="contact__title" id="contact-title">Email is the quickest way to reach me.</h2>
+
+    <p class="contact__address">
+      <a href={`mailto:${person.email}`}>{person.email}</a>
+    </p>
+
+    <div class="contact__actions">
+      <button type="button" class="copy" data-copy={person.email}>
+        <span class="copy__label">Copy address</span>
+      </button>
+      <a class="link-out" href={person.github}>GitHub <span aria-hidden="true">↗</span></a>
+      <a class="link-out" href={person.linkedin}>LinkedIn <span aria-hidden="true">↗</span></a>
+      <a class="link-out" href={person.githubRepos}>All repositories <span aria-hidden="true">↗</span></a>
+    </div>
+    <p class="copy__status visually-hidden" role="status" aria-live="polite"></p>
+  </div>
+</section>
+
+<script>
+  const btn = document.querySelector<HTMLButtonElement>('.copy');
+  const label = btn?.querySelector<HTMLElement>('.copy__label');
+  const status = document.querySelector<HTMLElement>('.copy__status');
+  let timer: number | undefined;
+
+  btn?.addEventListener('click', async () => {
+    if (!btn || !label) return;
+    const text = btn.dataset.copy ?? '';
+    window.clearTimeout(timer);
+    try {
+      await navigator.clipboard.writeText(text);
+      btn.dataset.state = 'success';
+      label.textContent = 'Copied';
+      if (status) status.textContent = 'Email address copied.';
+    } catch {
+      btn.dataset.state = 'error';
+      label.textContent = 'Copy failed';
+      if (status) status.textContent = 'Copy failed. Select the address above instead.';
+    }
+    timer = window.setTimeout(() => {
+      delete btn.dataset.state;
+      label.textContent = 'Copy address';
+    }, 2000);
+  });
+</script>
+
+<style>
+  .contact { padding-block: var(--space-3xl) var(--space-4xl); }
+
+  .contact__title {
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: var(--text-3xl);
+    font-variation-settings: 'opsz' 72;
+    line-height: var(--leading-tight);
+    letter-spacing: -0.02em;
+    color: var(--ink-2);
+    max-width: 22ch;
+  }
+
+  .contact__address {
+    margin-block-start: var(--space-xl);
+    font-family: var(--font-display);
+    font-weight: var(--weight-display);
+    font-size: clamp(1.5rem, 6.2vw, 4rem);
+    font-variation-settings: 'opsz' 72;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .contact__address a {
+    white-space: nowrap;
+    text-decoration-thickness: var(--rule-heavy);
+    text-underline-offset: 0.16em;
+    text-decoration-color: var(--accent);
+  }
+
+  .contact__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-md) var(--space-lg);
+    margin-block-start: var(--space-xl);
+  }
+  .contact__actions a { white-space: nowrap; }
+
+  /* Button: default · hover · focus-visible · active · disabled · success · error */
+  .copy {
+    font: inherit;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-strong);
+    color: var(--ink);
+    background: transparent;
+    border: var(--rule-hair) solid var(--ink-2);
+    border-radius: var(--radius-none);
+    padding: var(--space-xs) var(--space-md);
+    min-height: 2.5rem;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: transform var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out),
+      color var(--dur-micro) var(--ease-out);
+  }
+  .copy:hover { border-color: var(--accent); color: var(--accent); }
+  .copy:active { transform: translateY(1px); }
+  .copy:disabled { opacity: 0.5; cursor: not-allowed; }
+  .copy[data-state='success'] { border-color: var(--accent); color: var(--accent); }
+  .copy[data-state='error'] { border-style: dashed; color: var(--ink); }
+  @media (pointer: coarse) { .copy { min-height: 3rem; } }
+</style>

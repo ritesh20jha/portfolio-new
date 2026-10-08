@@ -1,0 +1,123 @@
+---
+import type { Project } from '../data/profile';
+
+interface Props {
+  project: Project;
+  level?: 3 | 4;
+  size?: 'compact' | 'full' | 'lead';
+}
+
+const { project: p, level = 3, size = 'full' } = Astro.props;
+const Heading = level === 3 ? 'h3' : 'h4';
+---
+
+<article class={`project project--${size}`}>
+  <Heading class="project__name">
+    <a href={p.repo}>{p.name}<span class="project__arrow" aria-hidden="true"> ↗</span></a>
+  </Heading>
+  <p class="project__stack mono">{p.stack.join(' · ')}</p>
+  <p class="project__what">{p.what}</p>
+
+  {p.how && (
+    <ul class="project__how">
+      {p.how.map((h) => <li>{h}</li>)}
+    </ul>
+  )}
+
+  {p.not && (
+    <p class="project__not">
+      <span class="project__not-label">Doesn’t:</span> {p.not}
+    </p>
+  )}
+
+  {(p.footnote || p.live) && (
+    <p class="project__foot">
+      {p.footnote}
+      {p.live && (
+        <a class="link-out" href={p.live}>Live site <span aria-hidden="true">↗</span></a>
+      )}
+    </p>
+  )}
+</article>
+
+<style>
+  .project {
+    display: grid;
+    align-content: start;
+    gap: var(--space-xs);
+    padding-block-start: var(--space-lg);
+    border-block-start: var(--rule-hair) solid var(--rule);
+    min-width: 0;
+  }
+
+  .project__name {
+    font-family: var(--font-display);
+    font-weight: var(--weight-heading);
+    font-size: var(--text-lg);
+    line-height: var(--leading-tight);
+    letter-spacing: -0.01em;
+  }
+  .project--lead .project__name { font-size: var(--text-xl); }
+  @media (min-width: 40rem) {
+    .project--full .project__name { font-size: var(--text-xl); }
+    .project--lead .project__name { font-size: var(--text-2xl); }
+  }
+
+  .project__name a { text-decoration: none; }
+  .project__name a:hover { color: var(--accent); }
+  .project__arrow {
+    font-size: 0.6em;
+    vertical-align: 0.3em;
+    color: var(--muted);
+  }
+  .project__name a:hover .project__arrow { color: var(--accent); }
+
+  .project__stack { color: var(--muted); }
+
+  .project__what {
+    max-width: var(--measure);
+    margin-block-start: var(--space-xs);
+  }
+  .project--lead .project__what { font-size: var(--text-md); line-height: 1.55; }
+
+  .project__how {
+    display: grid;
+    gap: var(--space-sm);
+    margin-block-start: var(--space-sm);
+    max-width: var(--measure);
+  }
+  .project__how li {
+    position: relative;
+    padding-inline-start: var(--space-lg);
+    color: var(--ink-2);
+  }
+  .project__how li::before {
+    content: '';
+    position: absolute;
+    inset-inline-start: 0;
+    inset-block-start: 0.62em;
+    width: 5px;
+    height: 5px;
+    background: var(--accent);
+  }
+
+  .project__not {
+    max-width: var(--measure);
+    margin-block-start: var(--space-sm);
+    padding-block-start: var(--space-sm);
+    border-block-start: var(--rule-hair) dashed var(--rule);
+    color: var(--ink-2);
+  }
+  .project__not-label {
+    font-weight: var(--weight-strong);
+    color: var(--ink);
+  }
+
+  .project__foot {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs) var(--space-lg);
+    margin-block-start: var(--space-sm);
+    color: var(--muted);
+  }
+</style>
